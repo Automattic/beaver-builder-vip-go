@@ -4,20 +4,17 @@
  * Plugin Name: Beaver Builder VIP Go Plugin
  * Description: Tweaks to make Beaver Builder work more seamlessly on VIP Go.
  *
- * Note: this relies on a few custom overrides made to the Beaver Builder plugin in the Existent repo. These change are being discussed with the BB team to include in the plugin directly.
+ * Note: this relies on a few custom overrides made to the Beaver Builder plugin. These change are being discussed with the BB team to include in the plugin directly.
  *
- * For background, see:
- *    https://github.com/wpcomvip/existent/pull/2
- *    https://github.com/wpcomvip/existent/pull/3
  */
 
-add_filter( 'fl_customizer_after_compile_css', 'existent_upload_bb_file', 10, 2 );
-add_filter( 'fl_customizer_after_render_css', 'existent_upload_bb_file', 10, 2 );
-add_filter( 'fl_customizer_after_render_js', 'existent_upload_bb_file', 10, 2 );
+add_filter( 'fl_customizer_after_compile_css', 'vip_upload_bb_file', 10, 2 );
+add_filter( 'fl_customizer_after_render_css', 'vip_upload_bb_file', 10, 2 );
+add_filter( 'fl_customizer_after_render_js', 'vip_upload_bb_file', 10, 2 );
 
-function existent_upload_bb_file( $path, $content ) {
+function vip_upload_bb_file( $path, $content ) {
 	// Make sure that CSS and JS files can be uploaded
-	existent_allow_bb_css_and_js_uploads();
+	vip_allow_bb_css_and_js_uploads();
 
 	$upload_dir = wp_get_upload_dir();
 
@@ -63,7 +60,7 @@ function existent_upload_bb_file( $path, $content ) {
 
 	// We don't need the upload_dir filter any more
 	remove_filter( 'upload_dir', $upload_dir_callback, 9999 );
-	existent_disallow_bb_css_and_js_uploads();
+	vip_disallow_bb_css_and_js_uploads();
 
 	// Something went wrong :(
 	if ( isset( $sideload['error'] ) ) {
@@ -74,15 +71,15 @@ function existent_upload_bb_file( $path, $content ) {
 	// TODO: handle success
 }
 
-function existent_allow_bb_css_and_js_uploads() {
-	add_filter( 'upload_mimes', 'existent_add_css_and_js_mime_types' );
+function vip_allow_bb_css_and_js_uploads() {
+	add_filter( 'upload_mimes', 'vip_add_css_and_js_mime_types' );
 }
 
-function existent_disallow_bb_css_and_js_uploads() {
-	remove_filter( 'upload_mimes', 'existent_add_css_and_js_mime_types' );
+function vip_disallow_bb_css_and_js_uploads() {
+	remove_filter( 'upload_mimes', 'vip_add_css_and_js_mime_types' );
 }
 
-function existent_add_css_and_js_mime_types( $mimes ) {
+function vip_add_css_and_js_mime_types( $mimes ) {
 	$mimes['css'] = 'text/css';
 	$mimes['js'] = 'application/x-javascript';
 	return $mimes;
